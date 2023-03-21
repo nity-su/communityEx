@@ -1,5 +1,5 @@
 export default async function getBoardContents() {
-  return await fetch("http://183.107.5.160:8080/api", {
+  return await fetch(`${process.env.domain}/api`, {
     method: "GET",
   }).then((data) => data.json());
 }

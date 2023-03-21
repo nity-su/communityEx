@@ -1,10 +1,9 @@
-import Index from "./pages/board/Index";
-import Writing from "./pages/board/Writing";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <Index />
+      <Outlet />
     </>
   );
 }
