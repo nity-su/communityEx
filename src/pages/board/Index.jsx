@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import apiCall from "../../services/getBoardContents";
-import { Link } from "react-router-dom";
-import subString from "../../utils/subString";
-
+import { Link, useMatch } from "react-router-dom";
 const Container = styled.div`
   display: flex;
   width: 100vw;
@@ -77,20 +75,41 @@ const BoardWriterID = styled.div`
   display: inline-block;
 `;
 
+const PageList = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+const PageNum = styled.span`
+  font-size: 16px;
+  margin-right: 2px;
+  cursor: pointer;
+`;
+
 export default function Index() {
+  const ref = useRef(0);
   const [state, setState] = useState(false);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageClick, setPageClick] = useState(0);
   console.log(process.env.domain);
   useEffect(() => {
-    apiCall()
-      .then((result) => setState(result))
+    // sessionStorage.setItem("myValue", state);
+    // const storedValue = sessionStorage.getItem("myValue");
+
+    apiCall(pageClick)
+      .then((result) => {
+        setPageIndex(result[1] / 5);
+        setState(result[0]);
+      })
       .catch(console.log);
-    // setState([
-    //   { time: "aa1a", title: "bbb" },
-    //   { time: "abaa", title: "bbb" },
-    //   ,
-    //   { time: "aa3a", title: "bbb" },
-    // ]);
-  }, []);
+
+    //총 게시글 수가 변경 되었는가?
+    //
+
+    // apiCall()
+    //   .then((result) => setState(result))
+    //   .catch(console.log);
+    // setState([{ time: "aa1a", title: "bbb", user_id: "teamp" }]);
+  }, [pageClick]);
 
   return (
     <Container>
@@ -110,6 +129,18 @@ export default function Index() {
               </ContentsWrapper>
             ))
           : null}
+        <PageList>
+          {Array.from({ length: pageIndex + 1 }).map((_, i) => (
+            <PageNum
+              key={i}
+              onClick={() => {
+                setPageClick(i);
+              }}
+            >
+              {i + 1}
+            </PageNum>
+          ))}
+        </PageList>
       </BoardWrapper>
     </Container>
   );
